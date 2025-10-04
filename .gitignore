@@ -1,0 +1,8 @@
+
+##Ignore the environment file 
+.env_db 
+.env
+
+
+docker-compose.yml 
+Dockerfile
