@@ -1,4 +1,7 @@
 from rest_framework import viewsets, permissions
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+from .filters import TaskFilter
 from .models import Task
 from .serializers import TaskSerializer
 
@@ -10,12 +13,20 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    #Ensures tasks are user-specific 
+    # Enables filtering based on TaskFilter
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TaskFilter
+
+    # Enables searching and ordering
+    ordering_fields = ['priority', 'due_date', 'created_at']
+    ordering = ['-due_date']
+
+    #Ensures tasks are user-specific
     def get_queryset(self):
         """Filters the queryset to only show tasks belonging to the currently logged-in user."""
         return Task.objects.filter(user=self.request.user)
 
-    #Assigns Task to User 
+    #Assigns Task to User
     def perform_create(self, serializer):
         """Automatically sets the 'user' field to the current user upon creation."""
         serializer.save(user=self.request.user)
