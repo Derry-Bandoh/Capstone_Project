@@ -28,7 +28,7 @@ class Task(models.Model):
         choices=Status.choices,
         default=Status.PENDING
     )
-
+    completed_at = models.DateTimeField(blank=True, null=True)      
     created_at = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField(blank=True, null=True)
 

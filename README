@@ -59,12 +59,12 @@ docker compose exec web python manage.py migrate
 🔑 Authentication and Access
 
 1. Create a User
-Endpoint: POST /api/accounts/register/ (or your registration URL)
+Endpoint: POST /api/auth/register/ (or your registration URL)
 
 Result: This process will create a new user. The API requires a separate step to generate a token for that user.
 
 2. Obtain an Authentication Token
-Endpoint: POST /api/accounts/login/ (or your token generation URL)
+Endpoint: POST /api/auth/login/ (or your token generation URL)
 
 Result: Returns a 40-character token string (e.g., 987f6e5d4c3b2a10f9e8d7c6b5a40987f6e5d4c3).
 
@@ -85,10 +85,21 @@ GET -> /api/tasks/{id}/ -> Retrieve a single task by ID.
 PUT/PATCH -> /api/tasks/{id}/ -> Update or partially update a task ->(requires JSON body)
 DELETE -> /api/tasks/{id}/ -> Delete a single task.
 
-Coding partner
-A README file should serve as the main introduction and guide for your project. Based on the work we've done (setting up a Dockerized Django Rest Framework API with Gunicorn and fixing authentication), here is a structure and the essential content your README.md should contain.
+Toggle completion Endpoints
 
-Project Title
+1. Mark task as complete
+    Endpoint : POST /api/tasks/{id}/toggle_completion/
+    Request body :
+        {
+    "status": "C"
+}
+2. Mark task as incomplete (Revert Completion)
+    Enpoint : POST /api/tasks/{id}/toggle_completion/
+    Request body :
+        {
+    "status": "P"
+}
+
 Task Manager API
 An authenticated RESTful API for managing user tasks, built with Django Rest Framework and containerized using Docker Compose.
 
@@ -102,28 +113,6 @@ Production-Ready Server: Utilizes Gunicorn for stable request handling.
 Core Task Management: CRUD operations for tasks (Create, Read, Update, Delete).
 
 Filtering & Sorting: Supports filtering tasks by status and priority, and sorting by due_date.
-
-⚙️ Setup and Installation
-Prerequisites
-You must have the following installed on your local machine:
-
-Docker
-
-Docker Compose
-
-Postman (or a similar HTTP client for testing)
-
-Steps
-Clone the Repository:
-
-Bash
-
-git clone [Your GitHub URL]
-cd capstone_project
-Create Environment File:
-Create a .env file in the project root directory and add your secret keys and database configuration. DO NOT commit this file.
-
-Code snippet
 
 # .env Example
 
@@ -147,23 +136,6 @@ Bash
 docker compose exec web python manage.py migrate
 🔑 Authentication and Access
 
-1. Create a User
-Endpoint: POST /api/accounts/register/ (or your registration URL)
-
-Result: This process will create a new user. The API requires a separate step to generate a token for that user.
-
-2. Obtain an Authentication Token
-Endpoint: POST /api/accounts/login/ (or your token generation URL)
-
-Result: Returns a 40-character token string (e.g., 987f6e5d4c3b2a10f9e8d7c6b5a40987f6e5d4c3).
-
-3. Authenticate API Requests
-For every protected endpoint, you must include the following header:
-
-Key Value
-Authorization Token [Your Token String]
-
-Export to Sheets
 📋 API Endpoints (Task Management)
 The following endpoints are protected and require a valid Authorization Token.
 
@@ -174,7 +146,6 @@ GET /api/tasks/{id}/ Retrieve a single task by ID. N/A
 PUT/PATCH /api/tasks/{id}/ Update or partially update a task. N/A (requires JSON body)
 DELETE /api/tasks/{id}/ Delete a single task. N/A
 
-Export to Sheets
 Filtering and Sorting Parameters
 You can combine the following query parameters on the GET /api/tasks/ endpoint:
 

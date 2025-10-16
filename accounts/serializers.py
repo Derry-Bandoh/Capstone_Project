@@ -1,17 +1,22 @@
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 from .models import CustomUser
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     # Ensuring the password is not returned after registration and requires confirmation
     password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+    token = serializers.CharField(read_only=True)
     
     class Meta:
         model = CustomUser
         # Explicitly including the standard fields plus the profile picture
-        fields = ['username', 'email', 'password', 'password2', 'profile_picture']
+        fields = ['username','first_name','last_name','birth_date', 'email', 'password', 'password2', 'profile_picture','token']
         extra_kwargs = {
             'password': {'write_only': True, 'style': {'input_type': 'password'}},
+            'first_name':{'required': True},
+            'last_name': {'required': True},
+            'birth_date': {'required': True},
             'email': {'required': True},
         }
 
@@ -31,6 +36,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             username=validated_data['username'],
             password=validated_data['password'],
+            first_name=validated_data['first_name'],
+            last_name= validated_data['last_name'],
+            birth_date= validated_data['birth_date'],
             profile_picture=validated_data.get('profile_picture')
         )
+        Token.objects.create(user=user)
         return user
